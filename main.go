@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -45,17 +47,48 @@ func main() {
 }
 
 func handleRequest() {
-	http.HandleFunc("/home_page", home_page)
-	http.HandleFunc("/create", create)
-	http.HandleFunc("/save_articles", save_articles)
-	http.HandleFunc("/contacts/", contactInformation)
-	http.HandleFunc("/our_error", ourError)
+	router := mux.NewRouter()
+	router.HandleFunc("/home_page", home_page).Methods("GET")
+	router.HandleFunc("/create", create).Methods("GET")
+	router.HandleFunc("/save_articles", save_articles).Methods("POST")
+	router.HandleFunc("/contacts/", contactInformation).Methods("GET")
+	router.HandleFunc("/post/{id:[0-100]+}", show_post).Methods("GET")
+	http.Handle("/", router)
+	router.HandleFunc("/our_error", ourError)
 	http.ListenAndServe(":8080", nil)
 }
 
-var posts = []Articles{}
+func show_post(t http.ResponseWriter, s *http.Request) {
+	vars := mux.Vars(s)
+	tmpl, err := template.ParseFiles("templates/show_post.html", "templates/header.html", "templates/footer.html")
+	if err != nil {
+		panic(err)
+	}
+	db, err := sql.Open("mysql", "root:password@tcp(localhost:3306)/test_db")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 
-// var showPost = Articles{}
+	res, err := db.Query(fmt.Sprintf("SELECT * FROM `test_db`.`articles` WHERE `id` = '%s'", vars["id"]))
+	if err != nil {
+		panic(err)
+	}
+	showPost = Articles{}
+	for res.Next() {
+		var post Articles
+		err = res.Scan(&post.Id, &post.Title, &post.Anons, &post.Full_Text)
+		if err != nil {
+			panic(err)
+		}
+		showPost = post
+	}
+	tmpl.ExecuteTemplate(t, "show_post", showPost)
+
+}
+
+var posts = []Articles{}
+var showPost = Articles{}
 
 func home_page(page http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("templates/index1.html", "templates/header.html", "templates/footer.html")

@@ -1,0 +1,12 @@
+{{ define "show_post" }}
+{{ template "header" }}
+<main role="main" class="inner cover">
+    <h1 class="cover heading">{{ .Title }}</h1>
+  <p class="lead">{{ .Full_Text }}</p>
+
+  <p class="lead">
+    <a href="/home_page" class="btn btn0lg btn-secondary">Назад</a>
+  </p>
+</main>      
+{{ template "footer" }}
+{{ end }}
