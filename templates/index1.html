@@ -1,0 +1,22 @@
+{{ define "index" }}
+{{ template "header" }}
+<main role="main" class="inner cover">
+    <h1 class="cover heading">Cover your page</h1>
+  <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+
+  {{ range . }}
+  <div class="alert alert-danger">
+    <h2>{{ .Title }}</h2>
+    <p>{{ .Anons }}</p>
+    <a href="/post/{{ .Id }}" class="btn btn-danger">Читать далее</a>
+  </div>
+
+  {{ else }}
+  <p class="lead">Статей нет!</p>
+  {{ end }}
+  <p class="lead">
+    <a href="#" class="btn btn-lg btn-light fw-bold border-white bg-white">Learn more</a>
+  </p>
+</main>      
+{{ template "footer" }}
+{{ end }}
