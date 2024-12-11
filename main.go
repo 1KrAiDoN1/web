@@ -52,7 +52,8 @@ func handleRequest() {
 	router.HandleFunc("/create", create).Methods("GET")
 	router.HandleFunc("/save_articles", save_articles).Methods("POST")
 	router.HandleFunc("/contacts/", contactInformation).Methods("GET")
-	router.HandleFunc("/post/{id:[0-100]+}", show_post).Methods("GET")
+	router.HandleFunc("/more_information", contactInformation).Methods("GET")
+	router.HandleFunc("/post/{id:[0-9]+}", show_post).Methods("GET")
 	http.Handle("/", router)
 	router.HandleFunc("/our_error", ourError)
 	http.ListenAndServe(":8080", nil)
@@ -138,6 +139,15 @@ func contactInformation(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, err.Error())
 	}
 	tmpl.ExecuteTemplate(w, "contacts", nil)
+
+}
+
+func more_information(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/more_information.html", "templates/header.html", "templates/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, err.Error())
+	}
+	tmpl.ExecuteTemplate(w, "more_information", nil)
 
 }
 
