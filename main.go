@@ -52,7 +52,7 @@ func handleRequest() {
 	router.HandleFunc("/create", create).Methods("GET")
 	router.HandleFunc("/save_articles", save_articles).Methods("POST")
 	router.HandleFunc("/contacts/", contactInformation).Methods("GET")
-	router.HandleFunc("/more_information", contactInformation).Methods("GET")
+	router.HandleFunc("/more_information", more_information).Methods("GET")
 	router.HandleFunc("/post/{id:[0-9]+}", show_post).Methods("GET")
 	http.Handle("/", router)
 	router.HandleFunc("/our_error", ourError)
